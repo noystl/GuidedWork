@@ -1,34 +1,48 @@
 from Enumerators.Enumerator import Enumerator
-from Problems.Problem import Problem
+from Problems.ShortestPaths.Graph import Graph
+from Problems.ShortestPaths.ShortestPathProblem import ShortestPathProblem
 from heapq import *
 
 
 class LawlerEnumerator(Enumerator):
     def __init__(self, problem):
         self.queue = []
-        include = set()
-        exclude = set()
-        heappush(self.queue, problem.solve(include, exclude, 0))
+        heappush(self.queue, (problem.solve([], []), [], []))
         super(LawlerEnumerator, self).__init__(problem)
 
-    def get_solution_generator(self) -> set:
-        i = 1
+    def get_solution_generator(self) -> tuple:
         while self.queue:
             next_sol = heappop(self.queue)
-            sol = next_sol[0][1]
-            yield sol
-            I = next_sol[1]
-            E = next_sol[2]
-            unfixed = sol.difference(I.union(E))
-            prev = set()
+            sol = next_sol[0]
+            yield next_sol
+            new_include = next_sol[1]
+            unfixed = sol.get_unfixed_elements()
+            prev = []
             for elem in unfixed:
-                set_elem = {elem}
-                new_solution = self.problem.solve(I.union(prev), E.union(set_elem), i)
-                heappush(self.queue, new_solution)
-                prev = set_elem
-            i += 1
+                new_include = new_include + prev
+                new_exclude = next_sol[2] + [elem]
+                new_solution = (self.problem.solve(new_include, new_exclude), new_include, new_exclude)
+                if new_solution[0]:
+                    heappush(self.queue, new_solution)
+                prev = [elem]
 
 
 if __name__ == '__main__':
-    c = LawlerEnumerator(Problem(set()))
-    print([*c.get_solution_generator()])
+    graph = Graph()
+    edges = [('1', '2', 1),
+             ('1', '3', 1),
+             ('1', '5', 9),
+             ('2', '3', 1),
+             ('2', '5', 3),
+             ('3', '4', 2),
+             ('3', '5', 1),
+             ('4', '5', 2)
+             ]
+
+    for edge in edges:
+        graph.add_edge(*edge)
+
+    c = LawlerEnumerator(ShortestPathProblem(graph, '1', '5'))
+    for sol in c.get_solution_generator():
+        pass
+        print("solution: " + str(sol[0]) + " I: " + str(sol[1]) + " E: " + str(sol[2]) + " score: " + str(sol[0].score()))

@@ -2,11 +2,7 @@ from Problems.Problem import Problem
 from Problems.ShortestPaths.Path import Path
 from Problems.ShortestPaths.Graph import Graph
 
-"""
-Tomorrow: 
-1) Handle solving with constraints
-2) Modify Lawler to be in line with the new design.
-"""
+import copy
 
 
 class ShortestPathProblem(Problem):
@@ -16,23 +12,26 @@ class ShortestPathProblem(Problem):
         self.dest = dest
         self.graph = problem_graph
 
-    def __handle_constraints(self, include_constraints: set, exclude_constraints: set):
-        pass
+    def __delete_edges(self, edges_to_delete: list) -> Graph:
+        new_graph = copy.deepcopy(self.graph)
+        for e in edges_to_delete:
+            new_graph.remove_edge(e[0], e[1])
+        return new_graph
 
-    def __get_shortest_path(self):
+    def __get_shortest_path(self, g: Graph, source) -> list:
         # shortest paths is a dict of nodes
         # whose value is a tuple of (previous node, weight)
-        shortest_paths = {self.source: (None, 0)}
-        current_node = self.source
+        shortest_paths = {source: (None, 0)}
+        current_node = source
         visited = set()
 
         while current_node != self.dest:
             visited.add(current_node)
-            destinations = self.graph.edges[current_node]
+            destinations = g.edges[current_node]
             weight_to_current_node = shortest_paths[current_node][1]
 
             for next_node in destinations:
-                weight = self.graph.weights[(current_node, next_node)] + weight_to_current_node
+                weight = g.weights[(current_node, next_node)] + weight_to_current_node
                 if next_node not in shortest_paths:
                     shortest_paths[next_node] = (current_node, weight)
                 else:
@@ -42,7 +41,7 @@ class ShortestPathProblem(Problem):
 
             next_destinations = {node: shortest_paths[node] for node in shortest_paths if node not in visited}
             if not next_destinations:
-                return "Route Not Possible"
+                return []
             # next node is the destination with the lowest weight
             current_node = min(next_destinations, key=lambda k: next_destinations[k][1])
 
@@ -54,40 +53,20 @@ class ShortestPathProblem(Problem):
         # Reverse path
         path = path[::-1]
 
-        return Path(path, graph.weights)
+        return path
 
-    def solve(self, include_constrains: set, exclude_constraints: set) -> Path:
-        self.__handle_constraints(include_constrains, exclude_constraints)
-        return self.__get_shortest_path()
-
-
-if __name__ == '__main__':
-    graph = Graph()
-    edges = [
-        ('X', 'A', 7),
-        ('X', 'B', 2),
-        ('X', 'C', 3),
-        ('X', 'E', 4),
-        ('A', 'B', 3),
-        ('A', 'D', 4),
-        ('B', 'D', 4),
-        ('B', 'H', 5),
-        ('C', 'L', 2),
-        ('D', 'F', 1),
-        ('F', 'H', 3),
-        ('G', 'H', 2),
-        ('G', 'Y', 2),
-        ('I', 'J', 6),
-        ('I', 'K', 4),
-        ('I', 'L', 4),
-        ('J', 'L', 1),
-        ('K', 'Y', 5),
-    ]
-
-    for edge in edges:
-        graph.add_edge(*edge)
-
-    test = ShortestPathProblem(graph, 'X', 'D')
-    best = test.solve(set(), set())
-    print(best)
-    print(best.score())
+    def solve(self, source_to_mid_edges: list, edges_to_delete: list):
+        new_graph = self.__delete_edges(source_to_mid_edges + edges_to_delete)
+        new_source = self.source if len(source_to_mid_edges) == 0 else source_to_mid_edges[-1][1]
+        mid_to_dest_path = self.__get_shortest_path(new_graph, new_source)
+        mid_to_dest_edges = []
+        if len(mid_to_dest_path) > 0:  # todo: handle self edges.
+            curr = 1
+            for i in range(1, len(mid_to_dest_path)):
+                mid_to_dest_edges.append((mid_to_dest_path[curr - 1], mid_to_dest_path[curr]))
+                curr += 1
+        else:
+            return None
+        best_path = Path(source_to_mid_edges + mid_to_dest_edges, self.graph.weights)
+        best_path.set_unfixed_elements(mid_to_dest_edges)
+        return best_path

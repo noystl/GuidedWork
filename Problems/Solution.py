@@ -1,11 +1,19 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
 
-class Solution(ABC):
+class Solution:
+    def __init__(self):
+        self.__unfixed_elements = []
 
     @abstractmethod
-    def score(self):
+    def score(self) -> float:
         pass
+
+    def set_unfixed_elements(self, unfixed: list):
+        self.__unfixed_elements = unfixed
+
+    def get_unfixed_elements(self) -> list:
+        return self.__unfixed_elements
 
     def __le__(self, other):
         return self.score() <= other.score()
