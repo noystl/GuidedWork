@@ -1,12 +1,10 @@
-import math
 
 from Problems.Solution import Solution
 
 
 class Path(Solution):
     def __init__(self, values: list, weights: dict):   # TODO: it's a little ugly to pass on the weights like that.
-        super().__init__()
-        self.values = values
+        super().__init__(values)
         self.weights = weights
 
     def score(self):

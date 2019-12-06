@@ -1,7 +1,6 @@
 from Problems.Problem import Problem
 from Problems.ShortestPaths.Path import Path
 from Problems.ShortestPaths.Graph import Graph
-
 import copy
 
 
@@ -70,3 +69,6 @@ class ShortestPathProblem(Problem):
         best_path = Path(source_to_mid_edges + mid_to_dest_edges, self.graph.weights)
         best_path.set_unfixed_elements(mid_to_dest_edges)
         return best_path
+
+    def apply_penalty(self, occurrences: dict):
+        pass

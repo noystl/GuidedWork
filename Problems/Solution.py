@@ -2,8 +2,9 @@ from abc import abstractmethod
 
 
 class Solution:
-    def __init__(self):
+    def __init__(self, values):
         self.__unfixed_elements = []
+        self.values = values
 
     @abstractmethod
     def score(self) -> float:
