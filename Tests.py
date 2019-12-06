@@ -31,9 +31,9 @@ def init_test_graph() -> Graph:
 
 if __name__ == '__main__':
     graph = init_test_graph()
-    # original = LawlerEnumerator(ShortestPathProblem(graph, '1', '5'))
-    # print("-----------ORIGINAL LAWLER--------------")
-    # print_solutions(original)
+    original = LawlerEnumerator(ShortestPathProblem(graph, '1', '5'))
+    print("-----------ORIGINAL LAWLER--------------")
+    print_solutions(original)
     print("-----------DIVERSE LAWLER---------------")
     naive_diverse = DiverseEnumerator(ShortestPathProblem(graph, '1', '5'))
     print_solutions(naive_diverse)

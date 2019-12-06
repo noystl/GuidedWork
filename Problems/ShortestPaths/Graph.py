@@ -24,3 +24,6 @@ class Graph:
         else:
             neighbors.remove(to_node)
         del self.weights[(from_node, to_node)]
+
+    def __str__(self):
+        return str(self.weights)

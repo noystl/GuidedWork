@@ -72,4 +72,5 @@ class ShortestPathProblem(Problem):
         return SolutionData(best_path, source_to_mid_edges, edges_to_delete)
 
     def apply_penalty(self, occurrences: dict):
-        pass
+        for edge in occurrences:
+            self.graph.weights[edge] += 1
