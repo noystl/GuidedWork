@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
-from Problems.Solution import Solution
+from Problems.SolutionData import SolutionData
 
 
 class Problem(ABC):
 
     @abstractmethod
-    def solve(self, include_constrains: set, exclude_constraints: set) -> Solution:
+    def solve(self, include_constrains: set, exclude_constraints: set) -> SolutionData:
         pass
 
     @abstractmethod
