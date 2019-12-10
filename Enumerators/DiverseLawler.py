@@ -3,7 +3,7 @@ from Problems.SolutionData import SolutionData
 from heapq import *
 
 
-class DiverseEnumerator(Enumerator):
+class DiverseLawler(Enumerator):
 
     def __update_queue(self):
         updated_queue = []

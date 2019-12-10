@@ -1,6 +1,7 @@
 from Enumerators.Enumerator import Enumerator
-from Enumerators.LawlerEnumerator import LawlerEnumerator
-from Enumerators.DiverseEnumerator import DiverseEnumerator
+from Enumerators.OriginalLawler import OriginalLawler
+from Enumerators.DiverseLawler import DiverseLawler
+from Enumerators.LazyDiverseLawler import LazyDiverseLawler
 from Problems.ShortestPaths.Graph import Graph
 from Problems.ShortestPaths.ShortestPathProblem import ShortestPathProblem
 
@@ -31,9 +32,12 @@ def init_test_graph() -> Graph:
 
 if __name__ == '__main__':
     graph = init_test_graph()
-    original = LawlerEnumerator(ShortestPathProblem(graph, '1', '5'))
+    original = OriginalLawler(ShortestPathProblem(graph, '1', '1'))
     print("-----------ORIGINAL LAWLER--------------")
     print_solutions(original)
     print("-----------DIVERSE LAWLER---------------")
-    naive_diverse = DiverseEnumerator(ShortestPathProblem(graph, '1', '5'))
+    naive_diverse = DiverseLawler(ShortestPathProblem(graph, '1', '5'))
     print_solutions(naive_diverse)
+    print("-----------LAZY DIVERSE LAWLER---------------")
+    lazy_diverse = LazyDiverseLawler(ShortestPathProblem(init_test_graph(), '1', '5'))
+    print_solutions(lazy_diverse)

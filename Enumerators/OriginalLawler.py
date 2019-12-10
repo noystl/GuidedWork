@@ -2,7 +2,7 @@ from Enumerators.Enumerator import Enumerator
 from heapq import *
 
 
-class LawlerEnumerator(Enumerator):
+class OriginalLawler(Enumerator):
 
     def get_solution_generator(self):
         while self.queue:

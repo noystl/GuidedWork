@@ -60,7 +60,7 @@ class ShortestPathProblem(Problem):
         new_source = self.source if len(source_to_mid_edges) == 0 else source_to_mid_edges[-1][1]
         mid_to_dest_path = self.__get_shortest_path(new_graph, new_source)
         mid_to_dest_edges = []
-        if len(mid_to_dest_path) > 0:  # todo: handle self edges.
+        if len(mid_to_dest_path) > 0:
             curr = 1
             for i in range(1, len(mid_to_dest_path)):
                 mid_to_dest_edges.append((mid_to_dest_path[curr - 1], mid_to_dest_path[curr]))
@@ -73,4 +73,4 @@ class ShortestPathProblem(Problem):
 
     def apply_penalty(self, occurrences: dict):
         for edge in occurrences:
-            self.graph.weights[edge] += 1
+            self.graph.weights[edge] += 2
