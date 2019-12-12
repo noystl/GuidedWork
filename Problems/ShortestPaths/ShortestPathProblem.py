@@ -10,7 +10,8 @@ class ShortestPathProblem(Problem):
     def __init__(self, problem_graph: Graph, source, dest):
         self.source = source
         self.dest = dest
-        self.graph = problem_graph
+        self.original_graph = problem_graph
+        self.graph = copy.deepcopy(problem_graph)
 
     def __delete_edges(self, edges_to_delete: list) -> Graph:
         new_graph = copy.deepcopy(self.graph)
@@ -67,10 +68,10 @@ class ShortestPathProblem(Problem):
                 curr += 1
         else:
             return None
-        best_path = Path(source_to_mid_edges + mid_to_dest_edges, self.graph.weights)
+        best_path = Path(source_to_mid_edges + mid_to_dest_edges, self.original_graph.weights, self.graph.weights)
         best_path.set_unfixed_elements(mid_to_dest_edges)
         return SolutionData(best_path, source_to_mid_edges, edges_to_delete)
 
     def apply_penalty(self, occurrences: dict):
         for edge in occurrences:
-            self.graph.weights[edge] += 2
+            self.graph.weights[edge] += 1

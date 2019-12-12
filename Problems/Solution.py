@@ -7,7 +7,11 @@ class Solution:
         self.values = values
 
     @abstractmethod
-    def score(self) -> float:
+    def original_score(self) -> float:
+        pass
+
+    @abstractmethod
+    def updated_score(self) -> float:
         pass
 
     def set_unfixed_elements(self, unfixed: list):
@@ -17,13 +21,13 @@ class Solution:
         return self.__unfixed_elements
 
     def __le__(self, other):
-        return self.score() <= other.score()
+        return self.updated_score() <= other.updated_score()     # todo: maybe score should be an attribute of solution
 
     def __lt__(self, other):
-        return self.score() < other.score()
+        return self.updated_score() < other.updated_score()
 
     def __ge__(self, other):
-        return self.score() > other.score()
+        return self.updated_score() > other.updated_score()
 
     def __gt__(self, other):
-        return self.score() >= other.score()
+        return self.updated_score() >= other.updated_score()

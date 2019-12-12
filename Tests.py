@@ -10,7 +10,8 @@ def print_solutions(enumerator: Enumerator):
     for solution_data in enumerator.get_solution_generator():
         pass
         print("solution: " + str(solution_data.solution) + " I: " + str(solution_data.include_constraints) + " E: " +
-              str(solution_data.exclude_constraints) + " score: " + str(solution_data.solution.score()))
+              str(solution_data.exclude_constraints) + " score: " + str(solution_data.solution.updated_score()) +
+              " original_score: " + str(solution_data.solution.original_score()))
 
 
 def init_test_graph() -> Graph:
@@ -32,7 +33,7 @@ def init_test_graph() -> Graph:
 
 if __name__ == '__main__':
     graph = init_test_graph()
-    original = OriginalLawler(ShortestPathProblem(graph, '1', '1'))
+    original = OriginalLawler(ShortestPathProblem(graph, '1', '5'))
     print("-----------ORIGINAL LAWLER--------------")
     print_solutions(original)
     print("-----------DIVERSE LAWLER---------------")

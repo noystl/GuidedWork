@@ -8,7 +8,7 @@ class LazyDiverseLawler(Enumerator):
         if self.queue:
             next_top = self.queue[0]
             updated_top = self.problem.solve(next_top.include_constraints, next_top.exclude_constraints)
-            while next_top.solution.score() != updated_top.solution.score():
+            while next_top.solution.updated_score() != updated_top.solution.updated_score():
                 heappop(self.queue)
                 heappush(self.queue, updated_top)
                 next_top = self.queue[0]
