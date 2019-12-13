@@ -15,8 +15,9 @@ class LazyDiverseLawler(Enumerator):
                 updated_top = self.problem.solve(next_top.include_constraints, next_top.exclude_constraints)
 
     def get_solution_generator(self):
-        while self.queue:
+        while self.queue and self.generated < self.to_generate:
             top_element = heappop(self.queue)
+            self.generated += 1
             yield top_element
 
             occurrences_dict = {}

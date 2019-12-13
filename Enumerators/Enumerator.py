@@ -5,8 +5,10 @@ from heapq import *
 
 class Enumerator:
 
-    def __init__(self, problem):
+    def __init__(self, problem, to_generate: int):
         self.problem = problem
+        self.to_generate = to_generate
+        self.generated = 0
         self.queue = []
         heappush(self.queue, problem.solve([], []))
 
