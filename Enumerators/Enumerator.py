@@ -10,7 +10,9 @@ class Enumerator:
         self.to_generate = to_generate
         self.generated = 0
         self.queue = []
-        heappush(self.queue, problem.solve([], []))
+        sol_data = problem.solve([], [])
+        if sol_data:
+            heappush(self.queue, problem.solve([], []))
 
     def insert_new_solutions(self, top_element: SolutionData):
         new_include = top_element.include_constraints

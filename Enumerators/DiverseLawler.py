@@ -18,12 +18,6 @@ class DiverseLawler(Enumerator):
             self.generated += 1
             yield top_element
 
-            occurrences_dict = {}
-            for member in top_element.solution.values:
-                if member not in occurrences_dict:
-                    occurrences_dict[member] = 0
-                occurrences_dict[member] += 1
-
-            self.problem.apply_penalty(occurrences_dict)
+            self.problem.apply_penalty(top_element.solution.values)
             self.__update_queue()
             self.insert_new_solutions(top_element)
