@@ -9,7 +9,11 @@ class LazyDiverseLawler(Enumerator):
             top = self.queue[0]
             while top.solution.current_score != top.solution.get_updated_score():
                 heappop(self.queue)
-                heappush(self.queue, self.problem.solve(top.include_constraints, top.exclude_constraints))
+                if top.solution.get_updated_values().issubset(set(top.include_constraints)):    # Todo: check this.
+                    print("Noy")
+                    heappush(self.queue, top.solution.update())
+                else:
+                    heappush(self.queue, self.problem.solve(top.include_constraints, top.exclude_constraints))
                 top = self.queue[0]
 
     def get_solution_generator(self):

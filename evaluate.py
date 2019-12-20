@@ -10,7 +10,7 @@ from Problems.ShortestPaths.ShortestPathProblem import ShortestPathProblem
 from Problems.SolutionData import SolutionData
 
 NETWORK_PATH = 'Networks\web-Stanford.txt'
-WEIGHTED_NET_PATH = 'Networks\\test_net.txt'
+WEIGHTED_NET_PATH = 'Networks\weighted_net.txt'
 logging.basicConfig(filename='enumeration.log', filemode='w', level=logging.INFO)
 
 
@@ -55,9 +55,9 @@ def eval_alg(alg: Enumerator, graph:nx.DiGraph):
 
 if __name__ == '__main__':
     graph = generate_graph()
-    wanted_solution_number = 6
-    src = 1
-    dst = 5
+    wanted_solution_number = 1
+    src = 2
+    dst = 25202
     eval_alg(OriginalLawler(ShortestPathProblem(graph, src, dst), wanted_solution_number), graph)
-    eval_alg(DiverseLawler(ShortestPathProblem(graph, src, dst), wanted_solution_number), graph)
-    eval_alg(LazyDiverseLawler(ShortestPathProblem(graph, src, dst), wanted_solution_number), graph)
+    # eval_alg(DiverseLawler(ShortestPathProblem(graph, src, dst), wanted_solution_number), graph)
+    # eval_alg(LazyDiverseLawler(ShortestPathProblem(graph, src, dst), wanted_solution_number), graph)

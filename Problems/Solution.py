@@ -16,6 +16,14 @@ class Solution:
     def get_updated_score(self) -> float:
         pass
 
+    @abstractmethod
+    def get_updated_values(self):
+        pass
+
+    @abstractmethod
+    def update(self):
+        pass
+
     def set_unfixed_elements(self, unfixed: list):
         self.__unfixed_elements = unfixed
 
