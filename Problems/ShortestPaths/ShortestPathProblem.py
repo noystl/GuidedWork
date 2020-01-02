@@ -24,13 +24,8 @@ class ShortestPathProblem(Problem):
         except nx.NetworkXNoPath:  # if there is no path between the source and the destination.
             return None
 
-        mid_to_dest_edges = []
-        curr = 1
-        # mid_to_dest_edges = [(mid_to_dest_path[i - 1], mid_to_dest_path[i]) for i in
-        #                      range(1, len(mid_to_dest_path))]
-        for i in range(1, len(mid_to_dest_path)):
-            mid_to_dest_edges.append((mid_to_dest_path[curr - 1], mid_to_dest_path[curr]))
-            curr += 1
+        mid_to_dest_edges = [(mid_to_dest_path[i - 1], mid_to_dest_path[i]) for i in
+                             range(1, len(mid_to_dest_path))]
 
         best_path = Path(source_to_mid_edges + mid_to_dest_edges, self.original_graph, self.graph)
         best_path.set_unfixed_elements(mid_to_dest_edges)
@@ -38,4 +33,4 @@ class ShortestPathProblem(Problem):
 
     def apply_penalty(self, edges: list):
         for edge in edges:
-            self.graph[edge[0]][edge[1]]['weight'] += 1
+            self.graph[edge[0]][edge[1]]['weight'] *= 1.4

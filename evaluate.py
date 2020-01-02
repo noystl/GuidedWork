@@ -1,6 +1,7 @@
 import random
 import time
 import networkx as nx
+
 import logging
 from Enumerators.Enumerator import Enumerator
 from Enumerators.OriginalLawler import OriginalLawler
@@ -11,7 +12,7 @@ from Problems.SolutionData import SolutionData
 
 NETWORK_PATH = 'Networks\web-Stanford.txt'
 WEIGHTED_NET_PATH = 'Networks\weighted_net.txt'
-logging.basicConfig(filename='enumeration.log', filemode='w', level=logging.INFO)
+logging.basicConfig(filename='evaluate.log', filemode='w', level=logging.INFO)
 
 
 def add_weights(net_path: str, smallest_weight: int, largest_weight: int):
@@ -33,11 +34,11 @@ def generate_graph() -> nx.DiGraph:
 
 def log_sol_data(sol_data: SolutionData):
     logging.info("solution: " + str(sol_data.solution) + " I: " + str(sol_data.include_constraints) + " E: " +
-          str(sol_data.exclude_constraints) + " score: " + str(sol_data.solution.current_score) +
-          " original_score: " + str(sol_data.solution.original_score))
+                 str(sol_data.exclude_constraints) + " score: " + str(sol_data.solution.current_score) +
+                 " original_score: " + str(sol_data.solution.original_score))
 
 
-def eval_alg(alg: Enumerator, graph:nx.DiGraph):
+def eval_alg(alg: Enumerator, graph: nx.DiGraph):
     logging.info("--------Enumerating with: " + str(type(alg).__name__) + "---------------")
     sol_gen = alg.get_solution_generator()
     total_length = 0
@@ -45,7 +46,7 @@ def eval_alg(alg: Enumerator, graph:nx.DiGraph):
     time1 = time.time()
     for sol_data in sol_gen:
         log_sol_data(sol_data)
-        total_length += sol_data.solution.current_score
+        total_length += sol_data.solution.original_score
         edges_seen = edges_seen.union(set(sol_data.solution.values))
     time2 = time.time()
     logging.info('Total paths length: ' + str(total_length))
@@ -54,10 +55,11 @@ def eval_alg(alg: Enumerator, graph:nx.DiGraph):
 
 
 if __name__ == '__main__':
+    # add_weights(NETWORK_PATH, 1, 1)
     graph = generate_graph()
-    wanted_solution_number = 1
+    wanted_solution_number = 30
     src = 2
     dst = 25202
-    eval_alg(OriginalLawler(ShortestPathProblem(graph, src, dst), wanted_solution_number), graph)
+    # eval_alg(OriginalLawler(ShortestPathProblem(graph, src, dst), wanted_solution_number), graph)
     # eval_alg(DiverseLawler(ShortestPathProblem(graph, src, dst), wanted_solution_number), graph)
-    # eval_alg(LazyDiverseLawler(ShortestPathProblem(graph, src, dst), wanted_solution_number), graph)
+    eval_alg(LazyDiverseLawler(ShortestPathProblem(graph, src, dst), wanted_solution_number), graph)
