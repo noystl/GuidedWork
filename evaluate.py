@@ -57,9 +57,9 @@ def eval_alg(alg: Enumerator, graph: nx.DiGraph):
 if __name__ == '__main__':
     # add_weights(NETWORK_PATH, 1, 1)
     graph = generate_graph()
-    wanted_solution_number = 30
+    wanted_solution_number = 10
     src = 2
     dst = 25202
-    # eval_alg(OriginalLawler(ShortestPathProblem(graph, src, dst), wanted_solution_number), graph)
+    eval_alg(OriginalLawler(ShortestPathProblem(graph, src, dst), wanted_solution_number), graph)
     # eval_alg(DiverseLawler(ShortestPathProblem(graph, src, dst), wanted_solution_number), graph)
-    eval_alg(LazyDiverseLawler(ShortestPathProblem(graph, src, dst), wanted_solution_number), graph)
+    # eval_alg(LazyDiverseLawler(ShortestPathProblem(graph, src, dst), wanted_solution_number), graph)

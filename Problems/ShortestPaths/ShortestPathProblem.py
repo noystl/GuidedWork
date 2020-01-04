@@ -2,6 +2,7 @@ from Problems.Problem import Problem
 from Problems.SolutionData import SolutionData
 from Problems.ShortestPaths.Path import Path
 import copy
+import math
 import networkx as nx
 
 
@@ -13,24 +14,50 @@ class ShortestPathProblem(Problem):
         self.original_graph = problem_graph
         self.graph = copy.deepcopy(problem_graph)
 
-    def solve(self, source_to_mid_edges: list, edges_to_delete: list):
-        new_graph = copy.deepcopy(self.graph)
-        new_graph.remove_edges_from(source_to_mid_edges + edges_to_delete)
-        new_source = self.source if len(source_to_mid_edges) == 0 else source_to_mid_edges[-1][1]
+    def save_weights(self, to_save: list) -> dict:
+        saved_weights = {}
+        for edge in to_save:
+            saved_weights[edge] = self.graph[edge[0]][edge[1]]['weight']
+        return saved_weights
 
+    def apply_constraints(self, banned_edges: list):
+        for edge in banned_edges:
+            self.graph[edge[0]][edge[1]]['weight'] = math.inf
+
+    def retrieve_weights(self, saved_weights: dict):
+        for edge in saved_weights:
+            self.graph[edge[0]][edge[1]]['weight'] = saved_weights[edge]
+
+    def find_shortest_path(self, source: int):
         try:
-            mid_to_dest_path = nx.algorithms.shortest_paths.weighted.dijkstra_path(new_graph, new_source, self.dest,
-                                                                                   weight='weight')
+            path = nx.algorithms.shortest_paths.weighted.dijkstra_path(self.graph, source, self.dest,
+                                                                       weight='weight')
         except nx.NetworkXNoPath:  # if there is no path between the source and the destination.
             return None
 
-        mid_to_dest_edges = [(mid_to_dest_path[i - 1], mid_to_dest_path[i]) for i in
-                             range(1, len(mid_to_dest_path))]
+        return [(path[i - 1], path[i]) for i in range(1, len(path))]
 
-        best_path = Path(source_to_mid_edges + mid_to_dest_edges, self.original_graph, self.graph)
-        best_path.set_unfixed_elements(mid_to_dest_edges)
-        return SolutionData(best_path, source_to_mid_edges, edges_to_delete)
+    def is_finite_solution(self, edges: list):
+        for edge in edges:
+            if self.graph[edge[0]][edge[1]]['weight'] is math.inf:
+                return False
+        return True
+
+    def solve(self, source_to_mid_edges: list, edges_to_delete: list):
+        saved_weights = self.save_weights(source_to_mid_edges + edges_to_delete)
+        self.apply_constraints(source_to_mid_edges + edges_to_delete)
+        new_source = self.source if len(source_to_mid_edges) == 0 else source_to_mid_edges[-1][1]
+        mid_to_dest_edges = self.find_shortest_path(new_source)
+
+        if mid_to_dest_edges and self.is_finite_solution(mid_to_dest_edges):
+            self.retrieve_weights(saved_weights)
+            best_path = Path(source_to_mid_edges + mid_to_dest_edges, self.original_graph, self.graph)
+            best_path.set_unfixed_elements(mid_to_dest_edges)
+            return SolutionData(best_path, source_to_mid_edges, edges_to_delete)
+
+        self.retrieve_weights(saved_weights)
+        return None
 
     def apply_penalty(self, edges: list):
         for edge in edges:
-            self.graph[edge[0]][edge[1]]['weight'] *= 1.4
+            self.graph[edge[0]][edge[1]]['weight'] *= 1.2

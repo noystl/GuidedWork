@@ -11,6 +11,7 @@ class LazyDiverseLawler(Enumerator):
                 heappop(self.queue)
                 if top.solution.get_updated_values().issubset(set(top.include_constraints)):    # Todo: check this.
                     heappush(self.queue, top.solution.update())
+                    print('opt')
                 else:
                     heappush(self.queue, self.problem.solve(top.include_constraints, top.exclude_constraints))
                 top = self.queue[0]
