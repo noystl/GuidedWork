@@ -1,7 +1,7 @@
 import random
 import time
 import networkx as nx
-
+import matplotlib.pyplot as plt
 import logging
 from Enumerators.Enumerator import Enumerator
 from Enumerators.OriginalLawler import OriginalLawler
@@ -10,7 +10,7 @@ from Enumerators.LazyDiverseLawler import LazyDiverseLawler
 from Problems.ShortestPaths.ShortestPathProblem import ShortestPathProblem
 from Problems.SolutionData import SolutionData
 
-NETWORK_PATH = 'Networks\web-Stanford.txt'
+NETWORK_PATH = 'Networks\\roadNet-PA.txt'
 WEIGHTED_NET_PATH = 'Networks\weighted_net.txt'
 logging.basicConfig(filename='evaluate.log', filemode='w', level=logging.INFO)
 
@@ -51,15 +51,16 @@ def eval_alg(alg: Enumerator, graph: nx.DiGraph):
     time2 = time.time()
     logging.info('Total paths length: ' + str(total_length))
     logging.info('Edges Seen: ' + str(len(edges_seen)) + ' out of ' + str(graph.size()))
-    logging.info('Running time ' + str((time2 - time1)) + ' s.\n')
+    logging.info('Running time: ' + str((time2 - time1)) + ' s.')
+    logging.info('Number of problems solved: ' + str(alg.number_of_problems_solved) + '\n')
 
 
 if __name__ == '__main__':
     # add_weights(NETWORK_PATH, 1, 1)
     graph = generate_graph()
-    wanted_solution_number = 30
+    wanted_solution_number = 50
     src = 2
-    dst = 25202
+    dst = 153
     eval_alg(OriginalLawler(ShortestPathProblem(graph, src, dst), wanted_solution_number), graph)
     # eval_alg(DiverseLawler(ShortestPathProblem(graph, src, dst), wanted_solution_number), graph)
     eval_alg(LazyDiverseLawler(ShortestPathProblem(graph, src, dst), wanted_solution_number), graph)

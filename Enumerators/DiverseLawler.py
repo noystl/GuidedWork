@@ -10,6 +10,7 @@ class DiverseLawler(Enumerator):
         while self.queue:
             top: SolutionData = heappop(self.queue)
             heappush(updated_queue, self.problem.solve(top.include_constraints, top.exclude_constraints))
+            self.number_of_problems_solved += 1
         self.queue = updated_queue
 
     def get_solution_generator(self):

@@ -5,6 +5,8 @@ import copy
 import math
 import time
 import networkx as nx
+import logging
+logging.basicConfig(filename='evaluate.log', filemode='w', level=logging.INFO)
 
 
 class ShortestPathProblem(Problem):
@@ -15,7 +17,7 @@ class ShortestPathProblem(Problem):
         self.original_graph = problem_graph
         self.graph = copy.deepcopy(problem_graph)
         print(self.graph.number_of_nodes())
-        # self.prune_graph()
+        self.prune_graph()
         print(self.graph.number_of_nodes())
 
     def prune_graph(self):
@@ -60,7 +62,10 @@ class ShortestPathProblem(Problem):
         time1 = time.time()
         mid_to_dest_edges = self.find_shortest_path(new_source)
         time2 = time.time()
-        print('Dijkstra time: ' + str(time2 - time1))
+        if time2 - time1 > 1:
+            logging.info('Dijkstra time: ' + str(time2 - time1))
+            logging.info(mid_to_dest_edges)
+            logging.info(self.is_finite_solution(mid_to_dest_edges))
         if mid_to_dest_edges and self.is_finite_solution(mid_to_dest_edges):
             self.retrieve_weights(saved_weights)
             best_path = Path(source_to_mid_edges + mid_to_dest_edges, self.original_graph, self.graph)
