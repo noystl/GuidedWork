@@ -48,7 +48,7 @@ class TestShortestPath(unittest.TestCase):
 
     def log_sol_data(self, sol_data: SolutionData):
         logging.info("solution: " + str(sol_data.solution) + " I: " + str(sol_data.include_constraints) + " E: " +
-                     str(sol_data.exclude_constraints) + " score: " + str(sol_data.solution.current_score))
+                     str(sol_data.exclude_constraints) + " cost: " + str(sol_data.solution.current_cost))
 
     def check_answers(self, sol_gen, expected_outputs):
         for sol_data in sol_gen:
