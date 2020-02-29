@@ -3,9 +3,7 @@ from Problems.SolutionData import SolutionData
 from Problems.ShortestPaths.Path import Path
 import copy
 import networkx as nx
-import logging
 
-logging.basicConfig(filename='evaluate.log', filemode='w', level=logging.INFO)
 
 PRUNING_FACTOR = 1.5
 

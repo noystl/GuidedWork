@@ -7,7 +7,7 @@ class Problem(ABC):
     Represents a general optimization problem.
     """
 
-    def __init__(self, penalty_func):
+    def __init__(self, penalty_func=lambda x: x):
         self.penalty_func = penalty_func
 
     @abstractmethod

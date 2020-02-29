@@ -6,7 +6,7 @@ The results appear in evaluate.log
 import time
 import networkx as nx
 import logging
-import random
+import util
 import matplotlib.pyplot as plt
 import numpy as np
 from Enumerators.Enumerator import Enumerator
@@ -14,7 +14,6 @@ from Enumerators.OriginalLawler import OriginalLawler
 from Enumerators.NaiveEnumerator import NaiveEnumerator
 from Enumerators.LazyEnumerator import LazyEnumerator
 from Problems.ShortestPaths.ShortestPathProblem import ShortestPathProblem
-from Problems.SolutionData import SolutionData
 from Problems.Solution import Solution
 
 NETWORK_PATH = 'Networks\\roadNet-PA.txt'  # The path of the inspected network (no weights).
@@ -22,68 +21,6 @@ WEIGHTED_NET_PATH = 'Networks\\weighted_net.txt'  # The path of the inspected ne
 META_PREFIX = '#'
 
 logging.basicConfig(filename='evaluate.log', filemode='w', level=logging.INFO)
-
-
-def log_sol_data(sol_data: SolutionData):  # Todo: remove?
-    logging.info("solution: " + str(sol_data.solution) + " I: " + str(sol_data.include_constraints) + " E: " +
-                 str(sol_data.exclude_constraints) + " cost: " + str(sol_data.solution.current_cost) +
-                 " original_cost: " + str(sol_data.solution.original_cost))
-
-
-def eval_alg_for_tests(alg: Enumerator, graph: nx.DiGraph):  # todo: remove?
-    logging.info("--------Enumerating with: " + str(type(alg).__name__) + "---------------")
-    sol_gen = alg.get_solution_generator()
-    total_length = 0
-    edges_seen = set()
-    time1 = time.time()
-    for queue_elem in sol_gen:
-        log_sol_data(queue_elem[0])
-        logging.info('Tie-breaker: ' + str(queue_elem[1]))
-        total_length += queue_elem[0].solution.original_cost
-        edges_seen = edges_seen.union(set(queue_elem[0].solution.values))
-    time2 = time.time()
-    logging.info('Total paths length: ' + str(total_length))
-    logging.info('Average path cost: ' + str(total_length / alg.to_generate))
-    logging.info('Percent of edges seen: ' + str(len(edges_seen) / graph.size()))
-    logging.info('Running time: ' + str((time2 - time1)) + ' s.')
-    logging.info('Number of problems solved: ' + str(alg.number_of_problems_solved) + '\n')
-
-
-def add_weights(net_path: str, smallest_weight: int, largest_weight: int):
-    """
-    Gets a path of a network file (a file that contains the edges of the networks, things like:
-    #from  to
-     1     0
-     1     2
-     ...)
-     and creates a file describing the same network, but with weights and no "headers" (metadata lines that starts with
-     #). The weights are randomly chosen within a given range.
-
-     Output Example:
-     1  0   11
-     1  2   5
-     ...
-    :param net_path: an unweighted network file path.
-    :param smallest_weight: The smallest weight in the range.
-    :param largest_weight: The largest weight in the range.
-    """
-    print("Adding weights...")
-    with open(WEIGHTED_NET_PATH, 'w') as weighted_net:
-        with open(net_path, 'r') as original_net:
-            for line in original_net:
-                if not line.startswith(META_PREFIX):
-                    weight = random.randint(smallest_weight, largest_weight)
-                    weighted_net.write(line.rstrip('\n') + "\t" + str(weight) + '\n')
-
-
-def generate_graph() -> nx.DiGraph:
-    """
-    Converts the weighted network file in WEIGHTED_NET_PATH into a NetworkX directed graph object.
-    """
-    logging.info("Generating network graph...")
-    net_graph = nx.read_edgelist(WEIGHTED_NET_PATH, nodetype=int,
-                                 data=(('weight', float),), create_using=nx.DiGraph())
-    return net_graph
 
 
 def jaccard_dist(set1: set, set2: set) -> float:
@@ -231,14 +168,14 @@ if __name__ == '__main__':
     """
     Evaluates the enumerating algorithms and print the results to evaluate.log
     """
-    # add_weights(NETWORK_PATH, 1, 1)
-    graph = generate_graph()
+    # util.add_weights(NETWORK_PATH, 1, 1)
+    graph = util.generate_graph(WEIGHTED_NET_PATH)
     k = 50
     src = 2             # Some node in the tested network.
     dst = 150           # Some node in the tested network.
 
     logging.info("-------- Evaluating Running Times ---------------")
-    orig_times = eval_time(OriginalLawler(ShortestPathProblem(graph, src, dst, lambda x: x * 1.2), k))
+    orig_times = eval_time(OriginalLawler(ShortestPathProblem(graph, src, dst), k))
     naive_times = eval_time(NaiveEnumerator(ShortestPathProblem(graph, src, dst, lambda x: x * 1.2), k))
     lazy_times = eval_time(LazyEnumerator(ShortestPathProblem(graph, src, dst, lambda x: x * 1.2), k))
     plot_times(orig_times, naive_times, lazy_times)
